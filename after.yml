@@ -35,6 +35,8 @@
   #       - xclip
   #       - chromium
   #       - podman-compose
+  #       - nmap
+  #       - httpie
   #       - powerline
 
   # - name: Remove docker old versions
@@ -189,12 +191,51 @@
   #     name: nodejs
   #     state: present
 
-  - name: Install JHipster generator
-    npm:
-      name: generator-jhipster
-      global: yes
+  # - name: Install JHipster generator
+  #   npm:
+  #     name: generator-jhipster
+  #     global: yes
 
-  - name: Install yo
-    npm:
-      name: yo
-      global: yes
+  # - name: Install yo
+  #   npm:
+  #     name: yo
+  #     global: yes
+
+  # - name: Create IntelliJ home dir
+  #   file:
+  #     path: /opt/idea
+  #     state: directory
+
+  # - name: Unpack IntelliJ
+  #   unarchive:
+  #     src: files/ideaIU-2019.3.tar.gz
+  #     dest: /opt/idea
+  #     owner: jorge
+  #     group: jorge
+
+  # - name: Change setting in Sysctl for Inotify Watches Limit (required for IntelliJ)
+  #   lineinfile:
+  #     dest: /etc/sysctl.conf
+  #     line: fs.inotify.max_user_watches = 524288
+
+  # - name: Apply Sysctl changes
+  #   shell: sysctl -p --system
+
+  # - name: Create Docker CE repo
+  #   shell: dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+
+  # - name: Remove Moby Engine
+  #   dnf:
+  #     name: moby-engine
+  #     state: absent
+
+  # - name: Install Docker CE
+  #   dnf:
+  #     name: docker-ce
+  #     state: present
+
+  # - name: Adding jorge user to group sudo
+  #   user:
+  #     name: jorge
+  #     groups: docker
+  #     append: yes
