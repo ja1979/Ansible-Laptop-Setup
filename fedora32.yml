@@ -1,4 +1,4 @@
-- name: Setup new fedora 31 machine
+- name: Setup new fedora 32 machine
   hosts: localhost
   become: true
   tasks:
@@ -14,12 +14,12 @@
 
   - name: Install RPM Fusion Free repository
     dnf:
-      name: http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-31.noarch.rpm
+      name: http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-32.noarch.rpm
       state: present
 
   - name: Install RPM Fusion Non Free repository
     dnf:
-      name: http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-31.noarch.rpm
+      name: http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-32.noarch.rpm
       state: present
 
   - name: Install required packages
@@ -46,12 +46,17 @@
         - virt-manager
         - libvirt-client
         - ffmpeg
+        - fuse-exfat
+        - exfat-utils
+        - git-extras
+        - java-11-openjdk
+        - java-11-openjdk-devel
 
   - name: Install Fedora Workstation repository
     dnf:
       name: fedora-workstation-repositories
       state: present
-    
+  
   - name: Enable Chrome repository
     shell: dnf config-manager --set-enabled google-chrome
 
@@ -83,13 +88,13 @@
       dest: /opt/soapui
       owner: jorge
       group: jorge
-    
+  
   - name: Create SoapUI symbolic link 
     file:
       src: "/opt/soapui/SoapUI-5.5.0/bin/soapui.sh"
       dest: "/usr/local/bin/soapui.sh"
       state: link
-    
+  
   - name: Import VSC key
     rpm_key:
       state: present
@@ -245,6 +250,14 @@
       name: com.spotify.Client
       state: present
       remote: flathub
+
+  - name: Enable H.264 repository
+    shell: dnf config-manager --set-enabled fedora-cisco-openh264
+
+  - name: Install H.264 codec
+    dnf:
+      name: gstreamer1-plugin-openh264
+      state: present
 
   # - name: Active Cow Say
   #   blockinfile:
