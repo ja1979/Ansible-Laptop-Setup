@@ -5,7 +5,7 @@
 
   - name: Set hostname
     hostname:
-      name: jalaptop.sevolutivo.ec
+      name: jaxps.sevolutivo.ec
 
   - name: Update all packages
     dnf:
@@ -14,12 +14,12 @@
 
   - name: Install RPM Fusion Free repository
     dnf:
-      name: http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-32.noarch.rpm
+      name: https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-32.noarch.rpm
       state: present
 
   - name: Install RPM Fusion Non Free repository
     dnf:
-      name: http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-32.noarch.rpm
+      name: https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-32.noarch.rpm
       state: present
 
   - name: Install required packages
@@ -31,7 +31,6 @@
         - digikam
         - gimp
         - sysstat
-        - vlc
         - keepassx
         - java-1.8.0-openjdk-devel
         - lm_sensors
@@ -42,15 +41,17 @@
         - podman-compose
         - nmap
         - httpie
-        - powerline
         - virt-manager
         - libvirt-client
+        - vlc
         - ffmpeg
         - fuse-exfat
         - exfat-utils
         - git-extras
         - java-11-openjdk
         - java-11-openjdk-devel
+        - hdparm
+        - fzf
 
   - name: Install Fedora Workstation repository
     dnf:
@@ -69,31 +70,71 @@
     file:
       path: /opt/java
       state: directory
-
-  - name: Unpack Oracle Java 8
-    unarchive:
-      src: files/jdk-8u251-linux-x64.tar.gz
-      dest: /opt/java
       owner: jorge
       group: jorge
 
+  - name: Find Oracle Java 8 tar file
+    find:
+      paths: files
+      patterns: jdk-8u*-linux-x64.tar.gz
+    register: java
+
+  - name: Unpack Oracle Java 8
+    unarchive:
+      src: "{{ item.path }}"
+      dest: /opt/java
+      owner: jorge
+      group: jorge
+    with_items: "{{ java.files }}"
+
+  - name: Find Java 8 directory
+    find:
+      paths: /opt/java
+      patterns: 'jdk1.8.0_*'
+      file_type: directory
+    register: java_dir
+
+  - name: Create Java 8 symbolic link 
+    file:
+      src: "{{ item.path }}"
+      dest: "/opt/java/jdk1.8"
+      state: link
+    with_items: "{{ java_dir.files }}"
+  
   - name: Create SoapUI home dir
     file:
       path: /opt/soapui
       state: directory
+      owner: jorge
+      group: jorge  
+
+  - name: Find SoapUI tar file
+    find:
+      paths: files
+      patterns: SoapUI-5.*-linux-bin.tar.gz 
+    register: soapui
 
   - name: Unpack SoapUI
     unarchive:
-      src: files/SoapUI-5.5.0-linux-bin.tar.gz
+      src: "{{ item.path }}"
       dest: /opt/soapui
       owner: jorge
       group: jorge
+    with_items: "{{ soapui.files }}"
   
+  - name: Find SoapUI directory
+    find:
+      paths: /opt/soapui
+      patterns: 'SoapUI-5.*'
+      file_type: directory
+    register: soapui_dir
+
   - name: Create SoapUI symbolic link 
     file:
-      src: "/opt/soapui/SoapUI-5.5.0/bin/soapui.sh"
+      src: "{{item.path}}/bin/soapui.sh"
       dest: "/usr/local/bin/soapui.sh"
       state: link
+    with_items: "{{ soapui_dir.files }}"
   
   - name: Import VSC key
     rpm_key:
@@ -113,50 +154,26 @@
       name: code
       state: present
 
-  - name: Active Powerline
-    blockinfile:
-      dest: /home/jorge/.bashrc
-      block: |
-        if [ -f `which powerline-daemon` ]; then
-          powerline-daemon -q
-          POWERLINE_BASH_CONTINUATION=1
-          POWERLINE_BASH_SELECT=1
-          . /usr/share/powerline/bash/powerline.sh
-        fi
-      backup: yes
-
-  - name: Create Powerline config dir
-    file:
-      path: /home/jorge/.config/powerline
-      state: directory
-      owner: jorge
-      group: jorge
-
-  - name: Configure Git Powerline theme
-    copy:
-      dest: /home/jorge/.config/powerline/config.json
-      owner: jorge
-      group: jorge
-      content: |
-        {
-            "ext": {
-                "shell": {
-                    "theme": "default_leftonly"
-                }
-            }
-        }
-
   - name: Create SQL Developer home dir
     file:
       path: /opt/sqldeveloper
       state: directory
+      owner: jorge
+      group: jorge
+
+  - name: Find SQL Developer zip file
+    find:
+      paths: files
+      patterns: sqldeveloper-19.*-no-jre.zip 
+    register: sqldeveloper
 
   - name: Unpack SQL Developer
     unarchive:
-      src: files/sqldeveloper-19.2.1.247.2212-no-jre.zip
+      src: "{{ item.path }}"
       dest: /opt/sqldeveloper
       owner: jorge
       group: jorge
+    with_items: "{{ sqldeveloper.files }}"
     
   - name: Create SQL Developer script
     copy:
@@ -188,13 +205,22 @@
     file:
       path: /opt/idea
       state: directory
+      owner: jorge
+      group: jorge
+
+  - name: Find IntelliJ tar file
+    find:
+      paths: files
+      patterns: ideaIU-*.tar.gz
+    register: intellij
 
   - name: Unpack IntelliJ
     unarchive:
-      src: files/ideaIU-2020.1.tar.gz
+      src: "{{ item.path }}"
       dest: /opt/idea
       owner: jorge
       group: jorge
+    with_items: "{{ intellij.files }}"
 
   - name: Change setting in Sysctl for Inotify Watches Limit (required for IntelliJ)
     lineinfile:
@@ -259,19 +285,30 @@
       name: gstreamer1-plugin-openh264
       state: present
 
-  # - name: Active Cow Say
-  #   blockinfile:
-  #     dest: /home/jorge/.bashrc
-  #     block: |
-  #       # Cowsay
-  #       arr[0]=default
-  #       arr[1]=tux
-  #       arr[2]=sheep
-  #       arr[3]=bud-frogs
-  #       BOOL=$[RANDOM %${#arr[*]}]
-  #       fortune | cowsay -f ${arr[$BOOL]}
+  - name: Create myfiles and vm directories
+    file:
+      path: "/mnt/{{ item }}"
+      state: directory
+    with_items: ["myfiles", "vm"]
 
-  #       #History
-  #       HISTCONTROL=ignorespace
-  #       HISTTIMEFORMAT="%F %T  "
-  #     backup: yes
+  - name: Mount LVs
+    ansible.posix.mount:
+      path: "/mnt/{{ item }}"
+      src: "/dev/files/{{ item }}"
+      fstype: ext4
+      state: mounted
+    with_items: ["myfiles", "vm"]
+   
+  - name: Create symbolic links
+    file:
+      src: "/mnt/myfiles/{{ item }}"
+      dest: "/home/jorge/{{ item }}"
+      force: true
+      state: link
+    with_items: ["123","Documents","Downloads","Dropbox","Pictures","Projects"]
+
+  - name: Set Java 11 as default
+    shell: alternatives --set java java-11-openjdk.x86_64
+
+  - name: Set Java JDK 11 as default
+    shell: alternatives --set javac java-11-openjdk.x86_64
