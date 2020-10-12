@@ -33,6 +33,8 @@ fortune | cowsay -f ${arr[$BOOL]}
 # History
 HISTCONTROL=ignorespace
 HISTTIMEFORMAT="%F %T  "
+HISTSIZE=20000
+HISTFILESIZE=20000
 ```  
 
 
