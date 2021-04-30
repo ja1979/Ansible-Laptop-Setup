@@ -1,0 +1,288 @@
+- name: Setup new fedora 32 machine
+  hosts: localhost
+  become: true
+  tasks:
+
+#  - name: Set hostname
+#    hostname:
+#      name: jaxps.sevolutivo.ec
+#
+#  - name: Update all packages
+#    dnf:
+#      name: '*'
+#      state: latest
+#
+#  - name: Install RPM Fusion Free repository
+#    dnf:
+#      name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-34.noarch.rpm 
+#      state: present
+#      disable_gpg_check: true
+#
+#  - name: Install RPM Fusion Non Free repository
+#    dnf:
+#      name: https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-34.noarch.rpm 
+#      state: present
+#      disable_gpg_check: true
+#
+#  - name: Install required packages
+#    dnf:
+#      name: "{{ packages }}"
+#      state: latest
+#    vars:
+#      packages:
+#        - digikam
+#        - darktable
+#        - gimp
+#        - sysstat
+#        - keepassx
+#        - java-1.8.0-openjdk-devel
+#        - lm_sensors
+#        - gnome-shell-extension-pomodoro
+#        - gnome-tweaks
+#        - xclip
+#        - chromium
+#        - podman-compose
+#        - nmap
+#        - httpie
+#        - virt-manager
+#        - libvirt-client
+#        - vlc
+#        - ffmpeg
+#        - fuse-exfat
+#        - exfat-utils
+#        - git-extras
+#        - java-11-openjdk
+#        - java-11-openjdk-devel
+#        - hdparm
+#        - fzf
+#        - neofetch
+#
+#  - name: Install Fedora Workstation repository
+#    dnf:
+#      name: fedora-workstation-repositories
+#      state: present
+#  
+#  - name: Enable Chrome repository
+#    shell: dnf config-manager --set-enabled google-chrome
+#
+#  - name: Install Chrome
+#    dnf:
+#      name: google-chrome-stable
+#      state: present
+#
+#  - name: Remove nano as defualt editor
+#    dnf:
+#      name: nano-default-editor
+#      state: absent
+#
+#
+#  - name: Create Oracle Java 8 home dir
+#    file:
+#      path: /opt/java
+#      state: directory
+#      owner: jorge
+#      group: jorge
+#
+#  - name: Find Oracle Java 8 tar file
+#    find:
+#      paths: files
+#      patterns: jdk-8u*-linux-x64.tar.gz
+#    register: java
+#
+#  - name: Unpack Oracle Java 8
+#    unarchive:
+#      src: "{{ item.path }}"
+#      dest: /opt/java
+#      owner: jorge
+#      group: jorge
+#    with_items: "{{ java.files }}"
+#
+#  - name: Find Java 8 directory
+#    find:
+#      paths: /opt/java
+#      patterns: 'jdk1.8.0_*'
+#      file_type: directory
+#    register: java_dir
+#
+#  - name: Create Java 8 symbolic link 
+#    file:
+#      src: "{{ item.path }}"
+#      dest: "/opt/java/jdk1.8"
+#      state: link
+#    with_items: "{{ java_dir.files }}"
+#  
+#  - name: Create SoapUI home dir
+#    file:
+#      path: /opt/soapui
+#      state: directory
+#      owner: jorge
+#      group: jorge  
+#
+#  - name: Find SoapUI tar file
+#    find:
+#      paths: files
+#      patterns: SoapUI-5.*-linux-bin.tar.gz 
+#    register: soapui
+#
+#  - name: Unpack SoapUI
+#    unarchive:
+#      src: "{{ item.path }}"
+#      dest: /opt/soapui
+#      owner: jorge
+#      group: jorge
+#    with_items: "{{ soapui.files }}"
+#  
+#  - name: Find SoapUI directory
+#    find:
+#      paths: /opt/soapui
+#      patterns: 'SoapUI-5.*'
+#      file_type: directory
+#    register: soapui_dir
+#
+#  - name: Create SoapUI symbolic link 
+#    file:
+#      src: "{{item.path}}/bin/soapui.sh"
+#      dest: "/usr/local/bin/soapui.sh"
+#      state: link
+#    with_items: "{{ soapui_dir.files }}"
+#  
+#  - name: Install SQL Developer
+#    dnf:
+#      name: files/sqldeveloper-20.4.1.407.0006-20.4.1-407.0006.noarch.rpm
+#      state: present
+#      disable_gpg_check: yes
+#
+#  - name: Install Node.js
+#    dnf:
+#      name: nodejs
+#      state: present
+#
+#  - name: Install JHipster generator
+#    npm:
+#      name: generator-jhipster
+#      global: yes
+#
+#  - name: Install yo
+#    npm:
+#      name: yo
+#      global: yes
+#
+  - name: Create IntelliJ home dir
+    file:
+      path: /opt/idea
+      state: directory
+      owner: jorge
+      group: jorge
+
+  - name: Find IntelliJ tar file
+    find:
+      paths: files
+      patterns: ideaIU-*.tar.gz
+    register: intellij
+
+  - name: Unpack IntelliJ
+    unarchive:
+      src: "{{ item.path }}"
+      dest: /opt/idea
+      owner: jorge
+      group: jorge
+    with_items: "{{ intellij.files }}"
+
+#  - name: VirtualBox repo
+#    get_url:
+#      url: http://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+#      dest: /etc/yum.repos.d/
+#
+#  - name: Install required packages for VirtualBox
+#    dnf:
+#      name: "{{ packages }}"
+#      state: present
+#    vars:
+#      packages:
+#        - dkms
+#        - kernel-devel
+#        - make
+#        - patch
+#
+#  - name: Install VirtualBox
+#    dnf:
+#      name: VirtualBox-6.1
+#      state: present
+#
+#  - name: Install cowsay and fortune-mod
+#    dnf:
+#      name: "{{ packages }}"
+#      state: present
+#    vars:
+#      packages:
+#        - cowsay
+#        - fortune-mod
+#
+#  - name: Configure Flatpak
+#    shell: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#
+#  - name: Install Spotify via Flatpak
+#    flatpak:
+#      name: com.spotify.Client
+#      state: present
+#      remote: flathub
+#
+#  - name: Install Signal via Flatpak
+#    flatpak:
+#      name: org.signal.Signal
+#      state: present
+#      remote: flathub
+#
+#  - name: Install Telegram via Flatpak
+#    flatpak:
+#      name: org.telegram.desktop
+#      state: present
+#      remote: flathub
+#
+#  - name: Install Discord via Flatpak
+#    flatpak:
+#      name: com.discordapp.Discord
+#      state: present
+#      remote: flathub
+#
+#  - name: Install VS Code via Flatpak
+#    flatpak:
+#      name: com.visualstudio.code
+#      state: present
+#      remote: flathub
+#
+#  - name: Enable H.264 repository
+#    shell: dnf config-manager --set-enabled fedora-cisco-openh264
+#
+#  - name: Install H.264 codec
+#    dnf:
+#      name: gstreamer1-plugin-openh264
+#      state: present
+#
+#  - name: Create myfiles and vm directories
+#    file:
+#      path: "/mnt/{{ item }}"
+#      state: directory
+#    with_items: ["myfiles", "vm"]
+#
+#  - name: Mount LVs
+#    ansible.posix.mount:
+#      path: "/mnt/{{ item }}"
+#      src: "/dev/files/{{ item }}"
+#      fstype: ext4
+#      state: mounted
+#    with_items: ["myfiles", "vm"]
+#   
+#  - name: Create symbolic links
+#    file:
+#      src: "/mnt/myfiles/{{ item }}"
+#      dest: "/home/jorge/{{ item }}"
+#      force: true
+#      state: link
+#    with_items: ["123","Documents","Downloads","Dropbox","Pictures","Projects"]
+#
+#  - name: Set Java 11 as default
+#    shell: alternatives --set java java-11-openjdk.x86_64
+#
+#  - name: Set Java JDK 11 as default
+#    shell: alternatives --set javac java-11-openjdk.x86_64

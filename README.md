@@ -19,6 +19,11 @@ ansible-galaxy collection install ansible.posix
 ansible-playbook --ask-become-pass fedora32.yml
 ```
 
+Fedora 34
+```sh
+ansible-galaxy collection install ansible.posix
+ansible-playbook --ask-become-pass fedora34.yml
+```
 
 Cow say
 ```
