@@ -63,6 +63,7 @@
 #        - hdparm
 #        - fzf
 #        - neofetch
+#        - starship
 #
 #  - name: Install Fedora Workstation repository
 #    dnf:
