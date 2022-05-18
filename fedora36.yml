@@ -65,6 +65,7 @@
 #        - neofetch
 #        - starship
 #        - bat
+#        - gnome-extensions-app
 #
 #  - name: Install Fedora Workstation repository
 #    dnf:
