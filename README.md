@@ -30,6 +30,13 @@ Fedora 36
 ansible-playbook --ask-become-pass fedora36.yml
 ```
 
+Fedora 38
+```sh
+ansible-galaxy collection install community.general
+ansible-galaxy collection install ansible.posix
+ansible-playbook --ask-become-pass fedora38.yml
+```
+
 Cow say
 ```
 # Cowsay
