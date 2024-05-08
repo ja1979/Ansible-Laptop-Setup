@@ -37,7 +37,12 @@ ansible-galaxy collection install ansible.posix
 ansible-playbook --ask-become-pass fedora38.yml
 ```
 
-Cow say
+Fedora 40
+```sh
+ansible-playbook --ask-become-pass fedora40.yml
+```
+
+.bashrc
 ```
 # Cowsay
 arr[0]=default
@@ -48,7 +53,7 @@ BOOL=$[RANDOM %${#arr[*]}]
 fortune | cowsay -f ${arr[$BOOL]}
 
 # History
-HISTCONTROL=ignorespace
+HISTCONTROL=ignorespace:ignoredups
 HISTTIMEFORMAT="%F %T  "
 HISTSIZE=20000
 HISTFILESIZE=20000
@@ -57,7 +62,7 @@ HISTFILESIZE=20000
 
 starship
 ```
-curl -fsSL https://starship.rs/install.sh | bash
+curl -sS https://starship.rs/install.sh | sh
 
 echo '# starship' >> /home/jorge/.bashrc
 echo 'eval "$(starship init bash)"' >> /home/jorge/.bashrc
@@ -66,6 +71,5 @@ echo 'eval "$(starship init bash)"' >> /home/jorge/.bashrc
 fzf
 ```
 echo '# fzd' >> /home/jorge/.bashrc
-echo '/usr/share/fzf/shell/key-bindings.bash' >> /home/jorge/.bashrc
-echo '/etc/bash_completion.d/fzf' >> /home/jorge/.bashrc
+echo '[ -f /usr/share/fzf/shell/key-bindings.bash ] && source /usr/share/fzf/shell/key-bindings.bash' >> /home/jorge/.bashrc
 ```
